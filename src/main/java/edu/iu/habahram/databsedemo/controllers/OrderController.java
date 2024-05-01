@@ -1,7 +1,9 @@
 package edu.iu.habahram.databsedemo.controllers;
 
+import edu.iu.habahram.databsedemo.model.Customer;
 import edu.iu.habahram.databsedemo.model.Order;
 import edu.iu.habahram.databsedemo.model.Status;
+import edu.iu.habahram.databsedemo.repository.CustomerRepository;
 import edu.iu.habahram.databsedemo.repository.OrderRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import java.util.List;
 public class OrderController {
 
     OrderRepository orderRepository;
+    CustomerRepository customerRepository;
 
     public OrderController(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
@@ -62,6 +65,18 @@ public class OrderController {
         Example<Order> example = Example.of(order);
         List<Order> orders = (List<Order>) orderRepository.findAll(example);
         return ResponseEntity.status(HttpStatus.OK).body(orders);
+    }
+
+    @GetMapping("/{customerId}")
+    public ResponseEntity<List<Order>> findAllByCustomerId(@PathVariable String customerId)
+    {
+        Customer customer = customerRepository.findByUsername(customerId);
+        if (customer != null) {
+            List<Order> orders = orderRepository.findAllByCustomerUserName(customerId);
+            return ResponseEntity.status(HttpStatus.OK).body(orders);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
 
