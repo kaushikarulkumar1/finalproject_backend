@@ -1,9 +1,6 @@
 package edu.iu.habahram.databsedemo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Date;
 
@@ -12,30 +9,32 @@ import java.util.Date;
 public class Order {
     @Id
     @GeneratedValue
-    private Integer id;
+    private int id;
 
-    private Integer flowerId;
+    private int flowerId;
+    private String flowerName;
     private String recipientName;
-    private Float totalCost;
+    private float totalCost;
     private String customerUserName;
-
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     public Order() {
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getFlowerId() {
+    public int getFlowerId() {
         return flowerId;
     }
 
-    public void setFlowerId(Integer flowerId) {
+    public void setFlowerId(int flowerId) {
         this.flowerId = flowerId;
     }
 
@@ -47,11 +46,11 @@ public class Order {
         this.recipientName = recipientName;
     }
 
-    public Float getTotalCost() {
+    public float getTotalCost() {
         return totalCost;
     }
 
-    public void setTotalCost(Float totalCost) {
+    public void setTotalCost(float totalCost) {
         this.totalCost = totalCost;
     }
 
@@ -62,4 +61,21 @@ public class Order {
     public void setCustomerUserName(String customerUserName) {
         this.customerUserName = customerUserName;
     }
+
+    public String getFlowerName() {
+        return flowerName;
+    }
+
+    public void setFlowerName(String flowerName) {
+        this.flowerName = flowerName;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
 }

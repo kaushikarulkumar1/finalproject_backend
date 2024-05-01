@@ -1,8 +1,8 @@
 package edu.iu.habahram.databsedemo.controllers;
 
 import edu.iu.habahram.databsedemo.model.Order;
+import edu.iu.habahram.databsedemo.model.Status;
 import edu.iu.habahram.databsedemo.repository.OrderRepository;
-import edu.iu.habahram.databsedemo.services.OrderService;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +17,18 @@ import java.util.List;
 @RequestMapping("/orders")
 public class OrderController {
 
-    OrderService orderService;
+    OrderRepository orderRepository;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
+    public OrderController(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
     }
 
     @PostMapping
     public int add(@RequestBody Order order) {
         String username = getTheCurrentLoggedInCustomer();
         order.setCustomerUserName(username);
-        return orderService.add(order);
+        Order saved = orderRepository.save(order);
+        return saved.getId();
     }
 
     private String getTheCurrentLoggedInCustomer() {
@@ -47,7 +48,7 @@ public class OrderController {
         if(username.trim().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        List<Order> orders = orderService.findAllByCustomer(username);
+        List<Order> orders = orderRepository.findAllByCustomerUserName(username);
         return ResponseEntity.status(HttpStatus.OK).body(orders);
     }
 
@@ -57,10 +58,9 @@ public class OrderController {
         System.out.println(username);
         if(username.trim().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } else {
-            order.setCustomerUserName(username);
         }
-        List<Order> orders = orderService.search(order);
+        Example<Order> example = Example.of(order);
+        List<Order> orders = (List<Order>) orderRepository.findAll(example);
         return ResponseEntity.status(HttpStatus.OK).body(orders);
     }
 
